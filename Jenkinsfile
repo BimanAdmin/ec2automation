@@ -6,7 +6,7 @@ pipeline {
             AWS_ACCESS_KEY_ID = credentials('sb-navin-access')
             AWS_SECRET_ACCESS_KEY = credentials('sb-navin-secret')
             PULUMI_STATE_BUCKET = 's3://sandbox-pulumi-state'
-            PULUMI_STACK = 'pulumiec2sql-stack'
+            PULUMI_STACK = 'automationStack'
             PULUMI_CONFIG_PASSPHRASE = 'Welcome$123'
             PATH = "/var/lib/jenkins/.pulumi/bin:$PATH" // Installation Path for Pulumi on Jenkins ec2 machine
             npm_PATH= " /usr/share/npm:$npm_PATH"
