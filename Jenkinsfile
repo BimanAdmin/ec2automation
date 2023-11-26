@@ -42,7 +42,7 @@ pipeline {
                     withCredentials([string(credentialsId: 'sb-navin-access', variable: 'AWS_CREDENTIALS')]) {
                         sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
                         sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
-                        sh 'npm install -g npm@latest'
+                        sh 'npm install'
                         sh 'npm install pulumi && npm install @pulumi/aws && npm install @pulumi/pulumi'
                         //Version Check
                         sh 'pulumi version'
