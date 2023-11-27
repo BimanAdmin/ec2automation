@@ -10,7 +10,7 @@ const server = new aws.ec2.Instance("ansibleserver", {
     instanceType: "t2.micro",
     securityGroups: [ group.name ], // reference the security group resource above
     ami: "ami-093467ec28ae4fe03",
-    keyName:"KC-UAT-US",
+    keyName:"jenkins-server-key",
     userData: `#!/bin/bash
               sudo yum update -y
               sudo yum install -y docker
