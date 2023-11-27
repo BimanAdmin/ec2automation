@@ -13,7 +13,7 @@ pipeline {
         PATH = "/var/lib/jenkins/.pulumi/bin:$PATH" // Installation Path for Pulumi on Jenkins ec2 machine
         npm_PATH= " /usr/share/npm:$npm_PATH"
         PULUMI_CONFIG_PASSPHRASE = credentials('PULUMI_CONFIG_PASSPHRASE')
-        PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN_ID')
+        PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN')
 
     }
 
