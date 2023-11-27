@@ -15,9 +15,8 @@
         npm_PATH= " /usr/share/npm:$npm_PATH"
         PULUMI_CONFIG_PASSPHRASE = credentials('PULUMI_CONFIG_PASSPHRASE')
         //PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN')
-        // NVM_VERSION = 'v0.39.1'
-        // NODEJS_VERSION = '14'
-
+        NVM_VERSION = 'v0.39.1'
+        NODEJS_VERSION = '14'
 
     }
 
@@ -81,11 +80,8 @@
 
                         // Set Pulumi state storage to AWS S3
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
-                        sh 'sudo apt-get update && sudo apt-get install -y ca-certificates curl gnupg'
-                        sh 'curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg'
-                        def NODE_MAJOR=16
-                        sh 'echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list'
-                        sh 'sudo apt-get update && sudo apt-get install nodejs -y'
+                        
+                        sh 'sudo apt-get install -y nodejs'
                         sh 'sudo apt-get install -y npm'
                         sh 'node -v'
                         sh 'npm -v'
@@ -93,7 +89,7 @@
                          //sh 'export PATH="$NVM_DIR/versions/node/v${NODEJS_VERSION}/bin:$PATH"'
                         //sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
                         //sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
-                        sh 'npm install @pulumi/pulumi@latest && npm install @pulumi/aws'
+                        sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
                         // def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
                         // def stackExists = stackList.contains(PULUMI_STACK)
                         // if (!stackExists) {
