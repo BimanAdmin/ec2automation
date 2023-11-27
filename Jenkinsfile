@@ -16,7 +16,7 @@ pipeline {
 
     }
 
-    tools 
+    tools {
          nodejs 'pulumi'
 
     }
