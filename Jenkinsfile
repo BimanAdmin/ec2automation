@@ -32,13 +32,12 @@ pipeline {
 
         stage ("Install dependencies and applications") {
             steps {
-                sh "curl -fsSL https://get.pulumi.com | sh"
-                sh "export PATH=$PATH:/var/lib/jenkins/.pulumi/bin"
                 sh 'sudo apt-get update -y'
                 sh 'sudo apt-get install -y unzip'
+                sh 'sudo apt-get install -y curl'
 
                 // Download and install AWS CLI
-                sh 'curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"'
+                sh 'curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"'
                 sh 'unzip awscliv2.zip'
                 sh 'sudo ./aws/install'
 
