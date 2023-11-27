@@ -77,4 +77,20 @@ pipeline {
 
         // Add more stages as needed
     }
+
+    post {
+            failure {
+                script {
+                    echo 'Destroying EKS cluster due to pipeline failure'
+                    // Run Pulumi destroy in case of pipeline failure
+                    sh 'pulumi destroy --yes'
+                }
+            }
+
+            success {
+                script {
+                    echo 'Pipeline executed successfully!'
+                }
+            }
+        }
 }
