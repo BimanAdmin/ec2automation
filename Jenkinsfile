@@ -81,7 +81,7 @@
 
                         // Set Pulumi state storage to AWS S3
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
-                        def NODE_VERSION = '14'
+                        def NODE_VERSION = '20'
                         sh "curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | sudo -E bash -"
                         sh 'sudo apt-get install -y nodejs'
                         sh 'sudo apt-get install -y npm'
