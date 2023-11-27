@@ -84,7 +84,7 @@
                         sh 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash'
                         sh 'export NVM_DIR="$HOME/.nvm"'
                         sh '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
-                        sh '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"'
+                        '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'
 
                         // Install Node.js and NPM
                         sh "nvm install ${NODEJS_VERSION}"
