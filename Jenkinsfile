@@ -3,10 +3,6 @@
     pipeline {
     agent any
 
-    parameters {
-        string(name: 'NODE_VERSION', defaultValue: '14', description: 'Node.js version')
-    }
-
     environment {
         AWS_REGION = 'us-west-2'
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
@@ -21,7 +17,7 @@
         //PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN')
         // NVM_VERSION = 'v0.39.1'
         // NODEJS_VERSION = '14'
-        NODE_VERSION = 'params.NODE_VERSION'
+
 
     }
 
@@ -85,7 +81,8 @@
 
                         // Set Pulumi state storage to AWS S3
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
-                        curl -sL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | sudo -E bash -
+                        def NODE_VERSION = '14'
+                        sh "curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | sudo -E bash -"
                         sh 'sudo apt-get install -y nodejs'
                         sh 'sudo apt-get install -y npm'
                         sh 'node -v'
