@@ -16,10 +16,10 @@ pipeline {
 
     }
 
-    tools {
-         nodejs 'pulumi'
+    // tools {
+    //      nodejs 'pulumi'
 
-    }
+    // }
 
     stages {
 
