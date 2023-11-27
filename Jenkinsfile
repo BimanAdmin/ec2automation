@@ -4,8 +4,8 @@ pipeline {
 
     environment {
         AWS_REGION = 'us-west-2'
-        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_ACCESS_KEY_ID = credentials('sb-navin-access')
+        AWS_SECRET_ACCESS_KEY = credentials('sb-navin-access')
         AWS_CREDENTIALS_ID = credentials('AWS_CREDENTIALS_ID')
         PULUMI_STACK = 'ec2automation-s3'
         GITHUB_REPO_URL = 'https://github.com/BimanAdmin/ec2automation.git'
@@ -80,7 +80,7 @@ pipeline {
                     sh 'chmod +x pulumi-up.sh'
 
                     // Execute Pulumi up
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS_CREDENTIALS_ID', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                    withCredentials([string(credentialsId: 'sb-navin-access', variable: 'AWS_CREDENTIALS')]) {
                         // Set AWS credentials for Pulumi
                         sh 'export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID'
                         sh 'export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY'
