@@ -41,7 +41,7 @@ pipeline {
                     sh 'chmod +x pulumi-up.sh'
 
                     // Execute Pulumi up
-                    withCredentials([string(credentialsId: 'sb-navin-access', variable: 'AWS_CREDENTIALS')]) {
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS_CREDENTIALS_ID', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 
                         sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
                         sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
