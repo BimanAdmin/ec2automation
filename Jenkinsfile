@@ -15,8 +15,7 @@
         npm_PATH= " /usr/share/npm:$npm_PATH"
         PULUMI_CONFIG_PASSPHRASE = credentials('PULUMI_CONFIG_PASSPHRASE')
         //PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN')
-        NVM_VERSION = 'v0.39.1'
-        NODEJS_VERSION = '14'
+        NODE_VERSION = '14'
 
     }
 
@@ -81,10 +80,8 @@
                         // Set Pulumi state storage to AWS S3
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
                         sh 'sudo apt update'
-                        sh 'cd ~'
-                        sh 'curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh'
-                        sh 'nano nodesource_setup.sh'
-                        sh 'sudo bash nodesource_setup.sh'
+                        sh "curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | sudo -E bash -"
+                        
                         sh 'sudo apt-get install -y nodejs'
                         sh 'sudo apt-get install -y npm'
                         sh 'node -v'
