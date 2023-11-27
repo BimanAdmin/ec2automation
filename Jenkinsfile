@@ -15,6 +15,8 @@
         npm_PATH= " /usr/share/npm:$npm_PATH"
         PULUMI_CONFIG_PASSPHRASE = credentials('PULUMI_CONFIG_PASSPHRASE')
         //PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN')
+        NVM_VERSION = 'v0.39.1'
+        NODEJS_VERSION = '14'
 
     }
 
@@ -78,10 +80,20 @@
 
                         // Set Pulumi state storage to AWS S3
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
-                        sh 'npm install'
-                        sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
-                        sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
-                        sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
+                        //sh 'npm install'
+                        sh 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh | bash'
+                        sh 'export NVM_DIR="$HOME/.nvm"'
+                        sh '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+
+                        // Install Node.js and NPM
+                        sh "nvm install ${NODEJS_VERSION}"
+                        sh "nvm use ${NODEJS_VERSION}"
+                        sh 'node -v'
+                        sh 'npm -v'
+                        sh 'export PATH="$NVM_DIR/versions/node/v${NODEJS_VERSION}/bin:$PATH"'
+                        //sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
+                        //sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
+                        //sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
                         // def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
                         // def stackExists = stackList.contains(PULUMI_STACK)
                         // if (!stackExists) {
