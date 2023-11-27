@@ -86,7 +86,7 @@
                         sh 'sudo apt-get install -f'
                         sh 'sudo apt update'
                         // sh 'nvm install node'
-                        sh 'sudo apt-get install -y npm'
+                        sh 'npm install'
                         sh 'node -v'
                         sh 'npm -v'
                        
