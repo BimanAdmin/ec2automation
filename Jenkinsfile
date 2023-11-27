@@ -62,6 +62,7 @@ pipeline {
                     // Create a script file for Pulumi up command
                     writeFile file: 'pulumi-up.sh', text: '''
                         #!/bin/bash
+                        pulumi config set awsRegion us-west-2
                         pulumi up --yes
                     '''
                     
