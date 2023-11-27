@@ -1,5 +1,7 @@
 import * as aws from "@pulumi/aws";
 
+
+
 const group = new aws.ec2.SecurityGroup("web-secgrp", {
     ingress: [
         { protocol: "tcp", fromPort: 22, toPort: 22, cidrBlocks: ["0.0.0.0/0"] },
