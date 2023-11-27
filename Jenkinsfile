@@ -79,10 +79,11 @@
 
                         // Set Pulumi state storage to AWS S3
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
-                        sh 'sudo apt update'
+                        
                         //sh 'curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -'
                         // sh '. /var/lib/jenkins/.bashrc'
                         sh 'sudo apt-get install -y nodejs'
+                        sh 'sudo apt update'
                         // sh 'nvm install node'
                         sh 'sudo apt-get install -y npm'
                         sh 'node -v'
