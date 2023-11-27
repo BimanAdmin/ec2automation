@@ -49,6 +49,16 @@ pipeline {
                 // Verify the installation
                 sh 'aws --version'
 
+                sh 'pulumi login s3://pulumi-jenkins-state-new/state-file/?region=us-west-2'
+                def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
+                def stackExists = stackList.contains(PULUMI_STACK)
+                if (!stackExists) {
+                            sh "pulumi stack init ${PULUMI_STACK}"
+                }
+                else { 
+                            sh "pulumi stack select ${PULUMI_STACK}"
+                }
+
              }
         }
 
@@ -96,15 +106,15 @@ pipeline {
 
                         sh 'npm install'
                         sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
-                        sh 'pulumi login s3://pulumi-jenkins-state-new/state-file/?region=us-west-2'
-                        def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
-                        def stackExists = stackList.contains(PULUMI_STACK)
-                        if (!stackExists) {
-                            sh "pulumi stack init ${PULUMI_STACK}"
-                        }
-                        else { 
-                            sh "pulumi stack select ${PULUMI_STACK}"
-                        }
+                        // sh 'pulumi login s3://pulumi-jenkins-state-new/state-file/?region=us-west-2'
+                        // def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
+                        // def stackExists = stackList.contains(PULUMI_STACK)
+                        // if (!stackExists) {
+                        //     sh "pulumi stack init ${PULUMI_STACK}"
+                        // }
+                        // else { 
+                        //     sh "pulumi stack select ${PULUMI_STACK}"
+                        // }
                         sh 'export PULUMI_CONFIG_PASSPHRASE="$PULUMI_CONFIG_PASSPHRASE"' 
                         sh './pulumi-up.sh'
                     }
