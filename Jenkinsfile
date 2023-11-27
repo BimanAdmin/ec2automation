@@ -83,6 +83,7 @@
                         //sh 'curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -'
                         // sh '. /var/lib/jenkins/.bashrc'
                         sh 'sudo apt-get install -y nodejs'
+                        sh 'sudo apt-get install -f'
                         sh 'sudo apt update'
                         // sh 'nvm install node'
                         sh 'sudo apt-get install -y npm'
