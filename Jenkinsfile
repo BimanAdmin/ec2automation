@@ -65,7 +65,7 @@
                     // Create a script file for Pulumi up command
                     writeFile file: 'pulumi-up.sh', text: '''
                         #!/bin/bash
-                        pulumi up --yes
+                        pulumi destroy --yes
                     '''
                     
                     // Make the script executable
@@ -85,7 +85,6 @@
                         sh 'sudo apt-get install -y nodejs'
                         sh 'sudo apt-get install -f'
                         sh 'sudo apt update'
-                        // sh 'nvm install node'
                         sh 'npm install'
                         sh 'node -v'
                         sh 'npm -v'
