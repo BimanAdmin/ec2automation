@@ -9,8 +9,8 @@ const group = new aws.ec2.SecurityGroup("web-secgrp", {
 const server = new aws.ec2.Instance("ansibleserver", {
     instanceType: "t2.micro",
     securityGroups: [ group.name ], // reference the security group resource above
-    ami: "ami-01103fb68b3569475",
-    keyName:"sbnkumartest",
+    ami: "ami-093467ec28ae4fe03",
+    keyName:"KC-UAT-US",
     userData: `#!/bin/bash
               sudo yum update -y
               sudo yum install -y docker
