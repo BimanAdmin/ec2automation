@@ -16,10 +16,10 @@ pipeline {
 
     }
 
-    // tools {
-    //      nodejs 'pulumi'
+    tools 
+         nodejs 'pulumi'
 
-    // }
+    }
 
     stages {
 
@@ -30,10 +30,20 @@ pipeline {
             }
         }
 
-        stage ("Install dependencies") {
+        stage ("Install dependencies and applications") {
             steps {
-                sh "curl -fsSL https://get.pulumi.com | sh"
-                sh "export PATH=$PATH:/var/lib/jenkins/.pulumi/bin"
+                sh 'echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers'
+                sh 'sudo apt-get update -y'
+                sh 'sudo apt-get install -y unzip'
+                sh 'sudo apt-get install -y curl'
+
+                // Download and install AWS CLI
+                sh 'curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"'
+                sh 'unzip awscliv2.zip'
+                sh 'sudo ./aws/install'
+
+                // Verify the installation
+                sh 'aws --version'
 
              }
         }
@@ -79,6 +89,8 @@ pipeline {
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
                         sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
                         sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
+
+
                         sh 'npm install'
                         sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
                         def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
