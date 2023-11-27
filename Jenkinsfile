@@ -32,7 +32,7 @@ pipeline {
 
         stage ("Install dependencies and applications") {
             steps {
-                sh 'echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers'
+                //sh 'echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers'
                 sh 'sudo apt-get update -y'
                 sh 'sudo apt-get install -y unzip'
                 sh 'sudo apt-get install -y curl'
