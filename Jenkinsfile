@@ -14,7 +14,7 @@
         PATH = "/var/lib/jenkins/.pulumi/bin:$PATH" // Installation Path for Pulumi on Jenkins ec2 machine
         npm_PATH= " /usr/share/npm:$npm_PATH"
         PULUMI_CONFIG_PASSPHRASE = credentials('PULUMI_CONFIG_PASSPHRASE')
-        //PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN')
+        PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN')
         NODE_VERSION = '14'
 
     }
@@ -80,9 +80,9 @@
                         // Set Pulumi state storage to AWS S3
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
                         sh 'sudo apt update'
-                        // sh 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash'
+                        sh 'curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -'
                         // sh '. /var/lib/jenkins/.bashrc'
-                        // //sh 'sudo apt-get install -y nodejs'
+                        sh 'sudo apt-get install -y nodejs'
                         // sh 'nvm install node'
                         sh 'sudo apt-get install -y npm'
                         sh 'node -v'
