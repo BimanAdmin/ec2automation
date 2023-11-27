@@ -80,19 +80,16 @@
 
                         // Set Pulumi state storage to AWS S3
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
-                        sh 'sudo apt update'
-                        sh 'curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -'
                         
                         sh 'sudo apt-get install -y nodejs'
                         sh 'sudo apt-get install -y npm'
                         sh 'node -v'
                         sh 'npm -v'
-                        sh 'npm install'
                        
                          //sh 'export PATH="$NVM_DIR/versions/node/v${NODEJS_VERSION}/bin:$PATH"'
                         //sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
                         //sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
-                        sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
+                        sh 'npm install @pulumi/pulumi@latest && npm install @pulumi/aws'
                         // def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
                         // def stackExists = stackList.contains(PULUMI_STACK)
                         // if (!stackExists) {
