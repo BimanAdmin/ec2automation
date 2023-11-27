@@ -72,7 +72,7 @@ pipeline {
                     writeFile file: 'pulumi-up.sh', text: '''
                         #!/bin/bash
                         pulumi config set awsRegion us-west-2
-                        pulumi destroy --yes
+                        pulumi up --yes
                     '''
                     
                     // Make the script executable
