@@ -80,6 +80,7 @@
                         // Set Pulumi state storage to AWS S3
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
                         //sh 'sudo apt update'
+                        sh 'sudo apt-get remove -y libnode-dev'
                         sh 'sudo apt-get install -y nodejs'
                         sh 'sudo apt-get install -y npm'
                         sh 'node -v'
