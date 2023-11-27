@@ -96,6 +96,7 @@ pipeline {
 
                         sh 'npm install'
                         sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
+                        sh 'pulumi login s3://pulumi-jenkins-state-new/state-file/?region=us-west-2'
                         def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
                         def stackExists = stackList.contains(PULUMI_STACK)
                         if (!stackExists) {
