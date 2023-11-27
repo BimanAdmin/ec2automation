@@ -79,8 +79,8 @@
 
                         // Set Pulumi state storage to AWS S3
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
-                        sh 'sudo apt update'
-                        sh 'sudo apt-get install -y nodejs 14.17.0'
+                        //sh 'sudo apt update'
+                        sh 'sudo apt-get install -y nodejs'
                         sh 'sudo apt-get install -y npm'
                         sh 'node -v'
                         sh 'npm -v'
