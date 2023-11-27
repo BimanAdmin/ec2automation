@@ -63,7 +63,7 @@ pipeline {
                     writeFile file: 'pulumi-up.sh', text: '''
                         #!/bin/bash
                         pulumi config set awsRegion us-west-2
-                        pulumi up --yes
+                        pulumi destroy --yes
                     '''
                     
                     // Make the script executable
@@ -75,6 +75,12 @@ pipeline {
                         sh 'export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID'
                         sh 'export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY'
 
+                        // Set Pulumi state storage to AWS S3
+                        sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
+                        sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
+                        sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
+                        sh 'npm install'
+                        sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
                         def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
                         def stackExists = stackList.contains(PULUMI_STACK)
                         if (!stackExists) {
@@ -83,21 +89,6 @@ pipeline {
                         else { 
                             sh "pulumi stack select ${PULUMI_STACK}"
                         }
-
-                        // Set Pulumi state storage to AWS S3
-                        sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
-                        sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
-                        sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
-                        sh 'npm install'
-                        sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
-                        // def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
-                        // def stackExists = stackList.contains(PULUMI_STACK)
-                        // if (!stackExists) {
-                        //     sh "pulumi stack init ${PULUMI_STACK}"
-                        // }
-                        // else { 
-                        //     sh "pulumi stack select ${PULUMI_STACK}"
-                        // }
                         sh 'export PULUMI_CONFIG_PASSPHRASE="$PULUMI_CONFIG_PASSPHRASE"' 
                         sh './pulumi-up.sh'
                     }
