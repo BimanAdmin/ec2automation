@@ -21,7 +21,7 @@
         //PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN')
         // NVM_VERSION = 'v0.39.1'
         // NODEJS_VERSION = '14'
-        NODE_VERSION = params.NODE_VERSION
+        NODE_VERSION = 'params.NODE_VERSION'
 
     }
 
