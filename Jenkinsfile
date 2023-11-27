@@ -4,12 +4,12 @@ pipeline {
 
     environment {
         AWS_REGION = 'us-west-2'
-        AWS_ACCESS_KEY_ID = credentials('sb-navin-access')
-        AWS_SECRET_ACCESS_KEY = credentials('sb-navin-access')
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_CREDENTIALS_ID = credentials('AWS_CREDENTIALS_ID')
         PULUMI_STACK = 'ec2automation-s3'
         GITHUB_REPO_URL = 'https://github.com/BimanAdmin/ec2automation.git'
-        PULUMI_STATE_BUCKET = 'pulumi-jenkins-state-auto/state-bucket/'  // Set your Pulumi state bucket URL AWS_CREDENTIALS_ID
+        PULUMI_STATE_BUCKET = 'pulumi-jenkins-state/state-bucket/'  // Set your Pulumi state bucket URL AWS_CREDENTIALS_ID
         PATH = "/var/lib/jenkins/.pulumi/bin:$PATH" // Installation Path for Pulumi on Jenkins ec2 machine
         npm_PATH= " /usr/share/npm:$npm_PATH"
         PULUMI_CONFIG_PASSPHRASE = credentials('PULUMI_CONFIG_PASSPHRASE')
@@ -80,7 +80,7 @@ pipeline {
                     sh 'chmod +x pulumi-up.sh'
 
                     // Execute Pulumi up
-                    withCredentials([string(credentialsId: 'sb-navin-access', variable: 'AWS_CREDENTIALS')]) {
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS_CREDENTIALS_ID', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                         // Set AWS credentials for Pulumi
                         sh 'export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID'
                         sh 'export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY'
