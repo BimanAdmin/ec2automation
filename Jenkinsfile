@@ -85,10 +85,10 @@
                         sh 'export NVM_DIR="$HOME/.nvm"'
 
                         // Append NVM initialization to the profile file
-                        sh 'echo \'[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"\' >> ~/.bashrc'
+                        sh 'echo \'[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"\' >> ~/.bashrc'
 
                         // Load NVM
-                        sh '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+                        sh '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'
 
                         // Install Node.js and NPM
                         sh "nvm install ${NODEJS_VERSION}"
