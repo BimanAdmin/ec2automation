@@ -78,9 +78,9 @@
 
                         // Set Pulumi state storage to AWS S3
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
+                        sh 'npm install'
                         sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
                         sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
-                        sh 'npm install'
                         sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
                         // def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
                         // def stackExists = stackList.contains(PULUMI_STACK)
