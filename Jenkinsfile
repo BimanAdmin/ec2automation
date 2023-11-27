@@ -1,5 +1,6 @@
-//////Jenkins Pipeline Code////
-pipeline {
+
+
+    pipeline {
     agent any
 
     environment {
@@ -31,53 +32,30 @@ pipeline {
             }
         }
 
-        stage ("Install dependencies and applications") {
+        stage ("Install dependencies") {
             steps {
                 sh "curl -fsSL https://get.pulumi.com | sh"
                 sh "export PATH=$PATH:/var/lib/jenkins/.pulumi/bin"
 
-                sh 'echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers'
-                sh 'sudo apt-get update -y'
-                sh 'sudo apt-get install -y unzip'
-                sh 'sudo apt-get install -y curl'
-
-                // Download and install AWS CLI
-                sh 'curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"'
-                sh 'unzip awscliv2.zip'
-                sh 'sudo ./aws/install'
-
-                // Verify the installation
-                sh 'aws --version'
-
-                sh 'pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}'
-                def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
-                def stackExists = stackList.contains(PULUMI_STACK)
-                if (!stackExists) {
-                            sh "pulumi stack init ${PULUMI_STACK}"
-                }
-                else { 
-                            sh "pulumi stack select ${PULUMI_STACK}"
-                }
-
              }
         }
 
-        // stage('Check or Initialize Pulumi Stack') {
-        //     steps {
-        //         script {
-        //             //Check if the stack exists
-        //             def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
-        //             def stackExists = stackList.contains(PULUMI_STACK)
-        //             if (!stackExists) {
-        //                     sh "pulumi stack init ${PULUMI_STACK}"
-        //             }
-        //             else { 
-        //                     sh "pulumi stack select ${PULUMI_STACK}"
-        //             }                   
+        stage('Check or Initialize Pulumi Stack') {
+            steps {
+                script {
+                    // Check if the stack exists
+                    def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
+                    def stackExists = stackList.contains(PULUMI_STACK)
+                    if (!stackExists) {
+                            sh "pulumi stack init ${PULUMI_STACK}"
+                        }
+                    else { 
+                            sh "pulumi stack select ${PULUMI_STACK}"
+                        }                   
                       
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
 
         stage('Pulumi Up') {
             steps {
@@ -86,7 +64,7 @@ pipeline {
                     // Create a script file for Pulumi up command
                     writeFile file: 'pulumi-up.sh', text: '''
                         #!/bin/bash
-                        pulumi up --yes
+                        pulumi destroy --yes
                     '''
                     
                     // Make the script executable
@@ -102,11 +80,8 @@ pipeline {
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
                         sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
                         sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
-
-
                         sh 'npm install'
                         sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
-                        // sh 'pulumi login s3://pulumi-jenkins-state-new/state-file/?region=us-west-2'
                         // def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
                         // def stackExists = stackList.contains(PULUMI_STACK)
                         // if (!stackExists) {
