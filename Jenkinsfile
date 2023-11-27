@@ -82,15 +82,11 @@
                         sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
                         //sh 'npm install'
                         sh 'export PROFILE_FILE="$HOME/.bashrc"'
-
-                        sh 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash'
                         sh 'export NVM_DIR="$HOME/.nvm"'
 
-                        // Append NVM initialization to the profile file
-                        sh 'echo \'[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"\' >> ~/.bashrc'
-
-                        // Load NVM
+                        sh 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | PROFILE=$PROFILE_FILE bash'
                         sh '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'
+                        sh 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | NVM_DIR=$NVM_DIR bash'
 
                         // Install Node.js and NPM
                         sh "nvm install ${NODEJS_VERSION}"
