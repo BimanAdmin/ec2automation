@@ -52,15 +52,15 @@ pipeline {
         stage('Check or Initialize Pulumi Stack') {
             steps {
                 script {
-                    // Check if the stack exists
+                    //Check if the stack exists
                     def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
                     def stackExists = stackList.contains(PULUMI_STACK)
                     if (!stackExists) {
                             sh "pulumi stack init ${PULUMI_STACK}"
-                        }
+                    }
                     else { 
                             sh "pulumi stack select ${PULUMI_STACK}"
-                        }                   
+                    }                   
                       
                 }
             }
@@ -73,7 +73,6 @@ pipeline {
                     // Create a script file for Pulumi up command
                     writeFile file: 'pulumi-up.sh', text: '''
                         #!/bin/bash
-                        pulumi config set awsRegion us-west-2
                         pulumi up --yes
                     '''
                     
