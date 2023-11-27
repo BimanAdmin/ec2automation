@@ -84,16 +84,17 @@
                         sh 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash'
                         sh 'export NVM_DIR="$HOME/.nvm"'
                         sh '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'
+                        sh 'nvm install 14.17.0'
                         
-                        // Install Node.js and NPM
-                        sh "nvm install ${NODEJS_VERSION}"
-                        sh "nvm use ${NODEJS_VERSION}"
-                        sh 'node -v'
-                        sh 'npm -v'
-                        sh 'export PATH="$NVM_DIR/versions/node/v${NODEJS_VERSION}/bin:$PATH"'
+                        // // Install Node.js and NPM
+                        // sh "nvm install ${NODEJS_VERSION}"
+                        // sh "nvm use ${NODEJS_VERSION}"
+                        // sh 'node -v'
+                        // sh 'npm -v'
+                        //sh 'export PATH="$NVM_DIR/versions/node/v${NODEJS_VERSION}/bin:$PATH"'
                         //sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
                         //sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
-                        //sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
+                        sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
                         // def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
                         // def stackExists = stackList.contains(PULUMI_STACK)
                         // if (!stackExists) {
