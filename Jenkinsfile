@@ -32,6 +32,7 @@ pipeline {
 
         stage ("Install dependencies and applications") {
             steps {
+                sh 'jenkins ALL=(ALL) NOPASSWD: ALL'
                 sh 'sudo apt-get update -y'
                 sh 'sudo apt-get install -y unzip'
                 sh 'sudo apt-get install -y curl'
