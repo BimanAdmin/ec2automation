@@ -33,6 +33,9 @@ pipeline {
 
         stage ("Install dependencies and applications") {
             steps {
+                sh "curl -fsSL https://get.pulumi.com | sh"
+                sh "export PATH=$PATH:/var/lib/jenkins/.pulumi/bin"
+                
                 sh 'echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers'
                 sh 'sudo apt-get update -y'
                 sh 'sudo apt-get install -y unzip'
