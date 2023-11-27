@@ -35,7 +35,7 @@ pipeline {
             steps {
                 sh "curl -fsSL https://get.pulumi.com | sh"
                 sh "export PATH=$PATH:/var/lib/jenkins/.pulumi/bin"
-                
+
                 sh 'echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers'
                 sh 'sudo apt-get update -y'
                 sh 'sudo apt-get install -y unzip'
@@ -52,22 +52,22 @@ pipeline {
              }
         }
 
-        stage('Check or Initialize Pulumi Stack') {
-            steps {
-                script {
-                    //Check if the stack exists
-                    def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
-                    def stackExists = stackList.contains(PULUMI_STACK)
-                    if (!stackExists) {
-                            sh "pulumi stack init ${PULUMI_STACK}"
-                    }
-                    else { 
-                            sh "pulumi stack select ${PULUMI_STACK}"
-                    }                   
+        // stage('Check or Initialize Pulumi Stack') {
+        //     steps {
+        //         script {
+        //             //Check if the stack exists
+        //             def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
+        //             def stackExists = stackList.contains(PULUMI_STACK)
+        //             if (!stackExists) {
+        //                     sh "pulumi stack init ${PULUMI_STACK}"
+        //             }
+        //             else { 
+        //                     sh "pulumi stack select ${PULUMI_STACK}"
+        //             }                   
                       
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
 
         stage('Pulumi Up') {
             steps {
@@ -96,14 +96,14 @@ pipeline {
 
                         sh 'npm install'
                         sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
-                        // def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
-                        // def stackExists = stackList.contains(PULUMI_STACK)
-                        // if (!stackExists) {
-                        //     sh "pulumi stack init ${PULUMI_STACK}"
-                        // }
-                        // else { 
-                        //     sh "pulumi stack select ${PULUMI_STACK}"
-                        // }
+                        def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
+                        def stackExists = stackList.contains(PULUMI_STACK)
+                        if (!stackExists) {
+                            sh "pulumi stack init ${PULUMI_STACK}"
+                        }
+                        else { 
+                            sh "pulumi stack select ${PULUMI_STACK}"
+                        }
                         sh 'export PULUMI_CONFIG_PASSPHRASE="$PULUMI_CONFIG_PASSPHRASE"' 
                         sh './pulumi-up.sh'
                     }
