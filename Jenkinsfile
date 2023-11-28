@@ -56,42 +56,42 @@ pipeline {
             }
         }
 
-        // stage('Pulumi Preview') {
-        //     steps {
-        //         script {
-        //             // Run pulumi preview and save the output to a file
-        //             sh 'pulumi preview --json > pulumi-preview-output.json'
+        stage('Pulumi Preview') {
+            steps {
+                script {
+                    // Run pulumi preview and save the output to a file
+                    sh 'pulumi preview --json > pulumi-preview-output.json'
 
-        //             def previewOutput = readFile('pulumi-preview-output.json').trim()
-        //             echo "Pulumi Preview Output: ${previewOutput}"
+                    def previewOutput = readFile('pulumi-preview-output.json').trim()
+                    echo "Pulumi Preview Output: ${previewOutput}"
 
-        //             def changes = readJSON file: 'pulumi-preview-output.json'
-        //             def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
+                    //def changes = readJSON file: 'pulumi-preview-output.json'
+                    //def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
 
 
 
-        //             //def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
-        //             //echo "Pulumi Preview Output: ${previewOutput}"
-        //             //def changes = readJSON text: previewOutput
+                    //def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+                    //echo "Pulumi Preview Output: ${previewOutput}"
+                    //def changes = readJSON text: previewOutput
 
-        //             // if (changes.steps && changes.steps.size() > 0) {
-        //             //     echo "Changes detected. Proceeding with deployment..."
-        //             //     currentBuild.result = 'SUCCESS' // Mark the build as successful
-        //             // } else {
-        //             //     echo "No changes detected. Skipping deployment."
-        //             //     currentBuild.result = 'ABORTED' // Mark the build as aborted
-        //             // }
+                    // if (changes.steps && changes.steps.size() > 0) {
+                    //     echo "Changes detected. Proceeding with deployment..."
+                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
+                    // } else {
+                    //     echo "No changes detected. Skipping deployment."
+                    //     currentBuild.result = 'ABORTED' // Mark the build as aborted
+                    // }
 
-        //             if (resourcesChanged) {
-        //             echo "Changes detected. Deploying resources..."
-        //             // Add your deployment logic here
-        //                 currentBuild.result = 'SUCCESS' // Mark the build as successful
-        //             } else {
-        //                 currentBuild.result = 'ABORTED' // Mark the build as aborted
-        //             }
-        //         }
-        //     }
-        //}
+                    // if (resourcesChanged) {
+                    // echo "Changes detected. Deploying resources..."
+                    // // Add your deployment logic here
+                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
+                    // } else {
+                    //     currentBuild.result = 'ABORTED' // Mark the build as aborted
+                    // }
+                }
+            }
+        }
 
         stage('Pulumi Up') {
             // when {
@@ -100,9 +100,9 @@ pipeline {
             steps {
                 script {
 
-                    sh 'pulumi preview --json > pulumi-preview-output.json'
-                    def previewOutput = readFile('pulumi-preview-output.json').trim()
-                    echo "Pulumi Preview Output: ${previewOutput}"
+                    // sh 'pulumi preview --json > pulumi-preview-output.json'
+                    // def previewOutput = readFile('pulumi-preview-output.json').trim()
+                    // echo "Pulumi Preview Output: ${previewOutput}"
                     def changes = readJSON file: 'pulumi-preview-output.json'
                     def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
                     
