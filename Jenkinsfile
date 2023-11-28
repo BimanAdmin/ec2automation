@@ -90,7 +90,7 @@ pipeline {
                   echo "Pulumi Preview Output: ${previewOutput}"
                   def changes = readJSON text: previewOutput
 
-                if (changes.steps && changes.steps.size() > 0) {
+                  if (changes.steps && changes.steps.size() > 0) {
                         echo "Changes detected. Proceeding with deployment..."
                         currentBuild.result = 'SUCCESS' // Mark the build as successful
                     }
