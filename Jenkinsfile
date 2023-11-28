@@ -105,8 +105,8 @@ pipeline {
                     // echo "Pulumi Preview Output: ${previewOutput}"
                     def changes = script {
                         def jsonData = readFile(file: 'pulumi-preview-output.json')
-                        //return readJSON text: jsonData
-                        return readJSON text: json.toString()
+                        return readJSON file: jsonData
+                        
                     }
                     def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
                     
