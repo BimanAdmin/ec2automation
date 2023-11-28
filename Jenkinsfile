@@ -140,22 +140,6 @@ pipeline {
             }
         }
 
-
-
-
-        //stage('Execute Kubernetes YAML Files') {
-            //steps {
-                //script {
-                    //echo 'Applying Kubernetes YAML files to the cluster'
-                    // Use kubectl to apply your Kubernetes YAML files
-                     //aws eks --region "${REGION}" update-kubeconfig --name "${CLUSTER_NAME}"
-                     //sh 'kubectl apply -f StorageClass.yaml'
-                     //sh 'kubectl apply -f pvc.yaml'
-                     //sh 'kubectl apply -f Statefulset.yaml'
-                     //sh 'kubectl apply -f S Service.yaml'
-                //}
-            //}
-        //}
     }
 
     post {
