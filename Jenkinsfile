@@ -128,13 +128,13 @@ pipeline {
                         sh 'export PULUMI_CONFIG_PASSPHRASE="$PULUMI_CONFIG_PASSPHRASE"' 
                         sh './pulumi-up.sh'
                     }
-                }else {
+                } else {
                         echo "No changes detected. Skipping deployment."
                         currentBuild.result = 'ABORTED' // Mark the build as aborted
                     }
 
             }
-            
+
             }
         }
 
