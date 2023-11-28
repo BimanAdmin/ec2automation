@@ -56,86 +56,100 @@ pipeline {
             }
         }
 
-        stage('Pulumi Preview') {
-            steps {
-                script {
-                    // Run pulumi preview and save the output to a file
-                    sh 'pulumi preview --json > pulumi-preview-output.json'
+        // stage('Pulumi Preview') {
+        //     steps {
+        //         script {
+        //             // Run pulumi preview and save the output to a file
+        //             sh 'pulumi preview --json > pulumi-preview-output.json'
 
-                    def previewOutput = readFile('pulumi-preview-output.json').trim()
-                    echo "Pulumi Preview Output: ${previewOutput}"
+        //             def previewOutput = readFile('pulumi-preview-output.json').trim()
+        //             echo "Pulumi Preview Output: ${previewOutput}"
 
-                    def changes = readJSON file: 'pulumi-preview-output.json'
-                    def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
+        //             def changes = readJSON file: 'pulumi-preview-output.json'
+        //             def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
 
 
 
-                    //def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
-                    //echo "Pulumi Preview Output: ${previewOutput}"
-                    //def changes = readJSON text: previewOutput
+        //             //def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+        //             //echo "Pulumi Preview Output: ${previewOutput}"
+        //             //def changes = readJSON text: previewOutput
 
-                    // if (changes.steps && changes.steps.size() > 0) {
-                    //     echo "Changes detected. Proceeding with deployment..."
-                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
-                    // } else {
-                    //     echo "No changes detected. Skipping deployment."
-                    //     currentBuild.result = 'ABORTED' // Mark the build as aborted
-                    // }
+        //             // if (changes.steps && changes.steps.size() > 0) {
+        //             //     echo "Changes detected. Proceeding with deployment..."
+        //             //     currentBuild.result = 'SUCCESS' // Mark the build as successful
+        //             // } else {
+        //             //     echo "No changes detected. Skipping deployment."
+        //             //     currentBuild.result = 'ABORTED' // Mark the build as aborted
+        //             // }
 
-                    if (resourcesChanged) {
-                    echo "Changes detected. Deploying resources..."
-                    // Add your deployment logic here
-                        currentBuild.result = 'SUCCESS' // Mark the build as successful
-                    } else {
-                        currentBuild.result = 'ABORTED' // Mark the build as aborted
-                    }
-                }
-            }
-        }
+        //             if (resourcesChanged) {
+        //             echo "Changes detected. Deploying resources..."
+        //             // Add your deployment logic here
+        //                 currentBuild.result = 'SUCCESS' // Mark the build as successful
+        //             } else {
+        //                 currentBuild.result = 'ABORTED' // Mark the build as aborted
+        //             }
+        //         }
+        //     }
+        //}
 
         stage('Pulumi Up') {
-            when {
-                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
-            }
+            // when {
+            //     expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+            // }
             steps {
                 script {
 
-                    // Create a script file for Pulumi up command
-                    writeFile file: 'pulumi-up.sh', text: '''
-                        #!/bin/bash
-                        pulumi up --yes
-                    '''
+                    sh 'pulumi preview --json > pulumi-preview-output.json'
+                    def previewOutput = readFile('pulumi-preview-output.json').trim()
+                    echo "Pulumi Preview Output: ${previewOutput}"
+                    def changes = readJSON file: 'pulumi-preview-output.json'
+                    def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
                     
-                    // Make the script executable
-                    sh 'chmod +x pulumi-up.sh'
+                    if (resourcesChanged) { 
 
-                    // Execute Pulumi up
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS_CREDENTIALS_ID', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                        // Set AWS credentials for Pulumi
-                        sh 'export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID'
-                        sh 'export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY'
-
-                        // Set Pulumi state storage to AWS S3
-                        sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
+                        // Create a script file for Pulumi up command
+                        writeFile file: 'pulumi-up.sh', text: '''
+                            #!/bin/bash
+                            pulumi up --yes
+                        '''
                         
-                        sh 'curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -'
-                        sh 'sudo apt-get install -y nodejs'
-                        //sh 'sudo apt-get install -f'
-                        sh 'sudo apt update'
-                        sh 'npm install'
-                        sh 'node -v'
-                        sh 'npm -v'
-                       
-                         //sh 'export PATH="$NVM_DIR/versions/node/v${NODEJS_VERSION}/bin:$PATH"'
-                        //sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
-                        //sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
-                        sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
-                        sh 'export PULUMI_CONFIG_PASSPHRASE="$PULUMI_CONFIG_PASSPHRASE"' 
-                        sh './pulumi-up.sh'
+                        // Make the script executable
+                        sh 'chmod +x pulumi-up.sh'
+
+                        // Execute Pulumi up
+                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS_CREDENTIALS_ID', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                            // Set AWS credentials for Pulumi
+                            sh 'export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID'
+                            sh 'export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY'
+
+                            // Set Pulumi state storage to AWS S3
+                            sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
+                            
+                            sh 'curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -'
+                            sh 'sudo apt-get install -y nodejs'
+                            //sh 'sudo apt-get install -f'
+                            sh 'sudo apt update'
+                            sh 'npm install'
+                            sh 'node -v'
+                            sh 'npm -v'
+                        
+                            //sh 'export PATH="$NVM_DIR/versions/node/v${NODEJS_VERSION}/bin:$PATH"'
+                            //sh 'export PATH="/var/lib/jenkins/.pulumi/bin:$PATH"'
+                            //sh 'export npm_PATH="/usr/share/npm:$npm_PATH"'
+                            sh 'npm install @pulumi/pulumi && npm install @pulumi/aws'
+                            sh 'export PULUMI_CONFIG_PASSPHRASE="$PULUMI_CONFIG_PASSPHRASE"' 
+                            sh './pulumi-up.sh'
                     }
-                }
+                }else {
+                echo "No changes detected. Skipping deployment."
             }
         }
+        
+        }
+
+        }
+
 
         //stage('Execute Kubernetes YAML Files') {
             //steps {
