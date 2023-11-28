@@ -60,6 +60,7 @@ pipeline {
             steps {
                 script {
                     def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+                    echo "Pulumi Preview Output: ${previewOutput}"
                     def changes = readJSON text: previewOutput
 
                     if (changes.steps && changes.steps.size() > 0) {
