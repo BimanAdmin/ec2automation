@@ -60,8 +60,9 @@ pipeline {
             steps {
                 script {
                     def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+                    def changes = readJSON text: previewOutput
 
-                    if (previewOutput.contains("changes")) {
+                    if (changes.steps && changes.steps.size() > 0) {
                         echo "Changes detected. Proceeding with deployment..."
                         currentBuild.result = 'SUCCESS' // Mark the build as successful
                     } else {
