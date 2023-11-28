@@ -63,7 +63,7 @@ pipeline {
 
                     if (previewOutput.contains("changes")) {
                         echo "Changes detected. Proceeding with deployment..."
-                        //currentBuild.result = 'SUCCESS' // Mark the build as successful
+                        currentBuild.result = 'SUCCESS' // Mark the build as successful
                     } else {
                         echo "No changes detected. Skipping deployment."
                         currentBuild.result = 'ABORTED' // Mark the build as aborted
@@ -82,7 +82,7 @@ pipeline {
                     // Create a script file for Pulumi up command
                     writeFile file: 'pulumi-up.sh', text: '''
                         #!/bin/bash
-                        pulumi destroy --yes
+                        pulumi up --yes
                     '''
                     
                     // Make the script executable
