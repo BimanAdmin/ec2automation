@@ -1,3 +1,9 @@
 1.nodejs
 2. aws creds
 3. docker
+
+For linux machine
+
+sudo yum install -y gcc-c++ make 
+curl -sL https://rpm.nodesource.com/setup_18.x | sudo -E bash - 
+sudo yum install -y nodejs 
