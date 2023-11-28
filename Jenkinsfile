@@ -68,7 +68,7 @@ pipeline {
 
                     def changes = readJSON file: 'pulumi-preview-output.json'
                     
-                    def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
+                    //def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
 
 
 
@@ -76,7 +76,7 @@ pipeline {
                     //echo "Pulumi Preview Output: ${previewOutput}"
                     //def changes = readJSON text: previewOutput
 
-                    if (resourcesChanged.steps && resourcesChanged.steps.size() > 0) {
+                    if (changes.steps && changes.steps.size() > 0) {
                         echo "Changes detected. Proceeding with deployment..."
                         currentBuild.result = 'SUCCESS' // Mark the build as successful
                     } else {
