@@ -7,7 +7,7 @@ const group = new aws.ec2.SecurityGroup("web-secgrp", {
 });
 
 const server = new aws.ec2.Instance("ansibleserver", {
-    instanceType: "t2.micro",
+    instanceType: "t2.small",
     securityGroups: [ group.name ], // reference the security group resource above
     ami: "ami-093467ec28ae4fe03",
     keyName:"ec2-automation-key",
