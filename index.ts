@@ -14,7 +14,7 @@ const server = new aws.ec2.Instance("ansibleserver", {
     ami: "ami-093467ec28ae4fe03",
     keyName:"ec2-automation-key",
     tags: {
-        Name: "instanceName",
+        Name: instanceName,
     },
     userData: `#!/bin/bash
               sudo yum update -y
