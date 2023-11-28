@@ -60,8 +60,8 @@ pipeline {
             steps {
                 script {
 
-                    def pulumiPreviewOutput = sh(script: 'pulumi refresh --json --yes', returnStdout: true).trim()
-                    echo "Pulumi refresh Output: ${pulumiPreviewOutput}"
+                    def pulumiPreviewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+                    echo "Pulumi Preview Output: ${pulumiPreviewOutput}"
 
 
                     def hasChanges = pulumiPreviewOutput.contains("tags") && pulumiPreviewOutput.contains("new_tag")
