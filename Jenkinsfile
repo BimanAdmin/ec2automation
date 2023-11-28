@@ -14,6 +14,7 @@ pipeline {
         PULUMI_CONFIG_PASSPHRASE = credentials('PULUMI_CONFIG_PASSPHRASE')
         PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN')
         NODE_VERSION = '14'
+        STAGE_NAME = 'New_Changes_Tracked'
 
     }
 
@@ -60,13 +61,15 @@ pipeline {
             steps {
                 script {
 
+                    def alreadyCreatedStage = 'your_already_created_stage'
+                    def currentStage = env.STAGE_NAME
                     def pulumiPreviewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
                     echo "Pulumi Preview Output: ${pulumiPreviewOutput}"
 
 
                     def hasChanges = pulumiPreviewOutput.contains("tags") && pulumiPreviewOutput.contains("new_tag")
 
-                    if (hasChanges) {
+                    if (currentStage == alreadyCreatedStage && hasChanges) {
 
                     // Create a script file for Pulumi up command
                         writeFile file: 'pulumi-up.sh', text: '''
