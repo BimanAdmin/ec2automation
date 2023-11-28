@@ -60,11 +60,13 @@ pipeline {
             steps {
                 script {
 
-                    //def changedResources = sh(script: 'pulumi preview --json', returnStdout: true).trim()
-                    def changedResources = sh(script: 'pulumi preview --json', returnStdout: true, returnStatus: true)
+                    def pulumiPreviewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+                    echo "Pulumi Preview Output: ${pulumiPreviewOutput}"
 
 
-                    if (changedResources == 0) {
+                    def hasChanges = pulumiPreviewOutput.contains("tags") && pulumiPreviewOutput.contains("new_tag")
+
+                    if (hasChanges) {
 
                     // Create a script file for Pulumi up command
                         writeFile file: 'pulumi-up.sh', text: '''
