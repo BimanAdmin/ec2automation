@@ -68,8 +68,9 @@ pipeline {
 
 
                     def hasChanges = pulumiPreviewOutput.contains("tags") && pulumiPreviewOutput.contains("new_tag")
+                    
 
-                    if (currentStage == alreadyCreatedStage && hasChanges) {
+                    if (currentStage == desiredStage || hasChanges) {
 
                     // Create a script file for Pulumi up command
                         writeFile file: 'pulumi-up.sh', text: '''
