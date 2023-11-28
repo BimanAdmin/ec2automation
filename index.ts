@@ -1,6 +1,6 @@
 import * as aws from "@pulumi/aws";
 
-
+const instanceName = "my-ec2-instance";
 
 const group = new aws.ec2.SecurityGroup("web-secgrp", {
     ingress: [
@@ -14,7 +14,7 @@ const server = new aws.ec2.Instance("ansibleserver", {
     ami: "ami-093467ec28ae4fe03",
     keyName:"ec2-automation-key",
     tags: {
-        Name: "ansible-server",
+        Name: "instanceName",
     },
     userData: `#!/bin/bash
               sudo yum update -y
@@ -30,3 +30,4 @@ const server = new aws.ec2.Instance("ansibleserver", {
 
 export const publicIp = server.publicIp;
 export const publicHostName = server.publicDns;
+export const instanceId = server.id;
