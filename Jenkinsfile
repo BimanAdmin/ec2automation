@@ -56,39 +56,26 @@ pipeline {
             }
         }
 
-        stage('Pulumi Preview') {
-            steps {
-                script {
-                    // Run pulumi preview and save the output to a file
-                    sh 'pulumi preview --json > pulumi-preview-output.json'
+        // stage('Pulumi Preview') {
+        //     steps {
+        //         script {
+        //             // Run pulumi preview and save the output to a file
+        //             sh 'pulumi preview --json > pulumi-preview-output.json'
 
-                    //def previewOutput = readFile('pulumi-preview-output.json').trim()
-                    //echo "Pulumi Preview Output: ${previewOutput}"
+        //             def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+        //             echo "Pulumi Preview Output: ${previewOutput}"
+        //             def changes = readJSON text: previewOutput
 
-                    def changes = readJSON file: 'pulumi-preview-output.json'
-                    if (changes.preview.steps && changes.preview.steps.size() > 0) {
-                        echo "Changes detected. Proceeding with deployment..."
-                        currentBuild.result = 'SUCCESS'
-                    } else {
-                        echo "No changes detected. Skipping deployment."
-                        currentBuild.result = 'ABORTED'
-                        return
-                    }
-
-                    //def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
-                    //echo "Pulumi Preview Output: ${previewOutput}"
-                    //def changes = readJSON text: previewOutput
-
-                    // if (changes.steps && changes.steps.size() > 0) {
-                    //     echo "Changes detected. Proceeding with deployment..."
-                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
-                    // } else {
-                    //     echo "No changes detected. Skipping deployment."
-                    //     currentBuild.result = 'ABORTED' // Mark the build as aborted
-                    // }
-                }
-            }
-        }
+        //             if (changes.steps && changes.steps.size() > 0) {
+        //                 echo "Changes detected. Proceeding with deployment..."
+        //                 currentBuild.result = 'SUCCESS' // Mark the build as successful
+        //             } else {
+        //                 echo "No changes detected. Skipping deployment."
+        //                 currentBuild.result = 'ABORTED' // Mark the build as aborted
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Pulumi Up') {
             when {
@@ -96,6 +83,17 @@ pipeline {
             }
             steps {
                 script {
+
+                  sh 'pulumi preview --json > pulumi-preview-output.json'
+
+                  def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+                  echo "Pulumi Preview Output: ${previewOutput}"
+                  def changes = readJSON text: previewOutput
+
+                  if (changes.steps && changes.steps.size() > 0) {
+                        echo "Changes detected. Proceeding with deployment..."
+                        currentBuild.result = 'SUCCESS' // Mark the build as successful
+                    }
 
                     // Create a script file for Pulumi up command
                     writeFile file: 'pulumi-up.sh', text: '''
@@ -130,7 +128,10 @@ pipeline {
                         sh 'export PULUMI_CONFIG_PASSPHRASE="$PULUMI_CONFIG_PASSPHRASE"' 
                         sh './pulumi-up.sh'
                     }
-                }
+                } else {
+                        echo "No changes detected. Skipping deployment."
+                        currentBuild.result = 'ABORTED' // Mark the build as aborted
+                    }
             }
         }
 
