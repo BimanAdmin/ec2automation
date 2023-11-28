@@ -65,7 +65,7 @@
                     // Create a script file for Pulumi up command
                     writeFile file: 'pulumi-up.sh', text: '''
                         #!/bin/bash
-                        pulumi up --yes
+                        pulumi destroy --yes
                     '''
                     
                     // Make the script executable
