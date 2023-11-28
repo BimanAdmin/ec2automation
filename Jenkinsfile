@@ -60,9 +60,11 @@ pipeline {
             steps {
                 script {
 
-                    def changedResources = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+                    //def changedResources = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+                    def changedResources = sh(script: 'pulumi preview --json', returnStdout: true, returnStatus: true)
 
-                    if (changedResources) {
+
+                    if (changedResources == 0) {
 
                     // Create a script file for Pulumi up command
                         writeFile file: 'pulumi-up.sh', text: '''
