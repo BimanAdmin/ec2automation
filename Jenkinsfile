@@ -63,9 +63,14 @@ pipeline {
                     sh 'pulumi preview --json > pulumi-preview-output.json'
 
                     def previewOutput = readFile('pulumi-preview-output.json').trim()
+                    
                     echo "Pulumi Preview Output: ${previewOutput}"
 
                     //def changes = readJSON file: 'pulumi-preview-output.json'
+                    def changes = script {
+                        def jsonData = readFile(file: 'pulumi-preview-output.json')
+                        return readJSON file: jsonData
+                    }
                     //def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
 
 
@@ -74,43 +79,32 @@ pipeline {
                     //echo "Pulumi Preview Output: ${previewOutput}"
                     //def changes = readJSON text: previewOutput
 
-                    // if (changes.steps && changes.steps.size() > 0) {
-                    //     echo "Changes detected. Proceeding with deployment..."
-                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
-                    // } else {
-                    //     echo "No changes detected. Skipping deployment."
-                    //     currentBuild.result = 'ABORTED' // Mark the build as aborted
-                    // }
-
-                    // if (resourcesChanged) {
-                    // echo "Changes detected. Deploying resources..."
-                    // // Add your deployment logic here
-                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
-                    // } else {
-                    //     currentBuild.result = 'ABORTED' // Mark the build as aborted
-                    // }
+                    if (changes.steps && changes.steps.size() > 0) {
+                        echo "Changes detected. Proceeding with deployment..."
+                        currentBuild.result = 'SUCCESS' // Mark the build as successful
+                    } else {
+                        echo "No changes detected. Skipping deployment."
+                        currentBuild.result = 'ABORTED' // Mark the build as aborted
+                    }
                 }
             }
         }
 
         stage('Pulumi Up') {
-            // when {
-            //     expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
-            // }
+            when {
+                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+            }
             steps {
                 script {
 
-                    // sh 'pulumi preview --json > pulumi-preview-output.json'
-                    // def previewOutput = readFile('pulumi-preview-output.json').trim()
-                    // echo "Pulumi Preview Output: ${previewOutput}"
-                    def changes = script {
-                        def jsonData = readFile(file: 'pulumi-preview-output.json')
-                        return readJSON file: jsonData
+                    // def changes = script {
+                    //     def jsonData = readFile(file: 'pulumi-preview-output.json')
+                    //     return readJSON file: jsonData
                         
-                    }
-                    def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
+                    // }
+                    // def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
                     
-                    if (resourcesChanged) { 
+                    // if (resourcesChanged) { 
 
                         // Create a script file for Pulumi up command
                         writeFile file: 'pulumi-up.sh', text: '''
@@ -145,14 +139,11 @@ pipeline {
                             sh 'export PULUMI_CONFIG_PASSPHRASE="$PULUMI_CONFIG_PASSPHRASE"' 
                             sh './pulumi-up.sh'
                     }
-                }else {
-                echo "No changes detected. Skipping deployment."
+                }
             }
         }
-        
-        }
 
-        }
+
 
 
         //stage('Execute Kubernetes YAML Files') {
