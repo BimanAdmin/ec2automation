@@ -57,20 +57,27 @@ pipeline {
             }
         }
 
-        stage('Pulumi Up') {
+        stage('Pulumi Preview') {
             steps {
                 script {
+                    def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
 
-                    def alreadyCreatedStage = 'your_already_created_stage'
-                    def currentStage = env.STAGE_NAME
-                    def pulumiPreviewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
-                    echo "Pulumi Preview Output: ${pulumiPreviewOutput}"
+                    if (previewOutput.contains("changes")) {
+                        echo "Changes detected. Proceeding with deployment..."
+                        currentBuild.result = 'SUCCESS' // Mark the build as successful
+                    } else {
+                        echo "No changes detected. Skipping deployment."
+                        currentBuild.result = 'ABORTED' // Mark the build as aborted
+                    }
+                }
+            }
+        }
 
-
-                    def hasChanges = pulumiPreviewOutput.contains("tags") && pulumiPreviewOutput.contains("new_tag")
-                    
-
-                    if (alreadyCreatedStage == currentStage || hasChanges) {
+        stage('Pulumi Up') {
+            when {
+                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+            steps {
+                script {
 
                     // Create a script file for Pulumi up command
                         writeFile file: 'pulumi-up.sh', text: '''
@@ -105,13 +112,10 @@ pipeline {
                             sh 'export PULUMI_CONFIG_PASSPHRASE="$PULUMI_CONFIG_PASSPHRASE"' 
                             sh './pulumi-up.sh'
                     }
-                }else {
-                        echo 'No changes detected. Skipping Pulumi up.'
-                    }
+                }
             }
         }
         
-    }
 
 
         //stage('Execute Kubernetes YAML Files') {
