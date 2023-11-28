@@ -39,23 +39,6 @@ pipeline {
              }
         }
 
-        stage('Check or Initialize Pulumi Stack') {
-            steps {
-                script {
-                    // Check if the stack exists
-                    def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
-                    def stackExists = stackList.contains(PULUMI_STACK)
-                    if (!stackExists) {
-                            sh "pulumi stack init ${PULUMI_STACK}"
-                        }
-                    else { 
-                            sh "pulumi stack select ${PULUMI_STACK}"
-                        }                   
-                      
-                }
-            }
-        }
-
         stage('Pulumi Preview') {
             steps {
                 script {
@@ -76,16 +59,43 @@ pipeline {
                     //echo "Pulumi Preview Output: ${previewOutput}"
                     //def changes = readJSON text: previewOutput
 
-                    if (changes.steps && changes.steps.size() > 0) {
+                    // if (changes.steps && changes.steps.size() > 0) {
+                    //     echo "Changes detected. Proceeding with deployment..."
+                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
+                    // } else {
+                    //     echo "No changes detected. Skipping deployment."
+                    //     currentBuild.result = 'ABORTED' // Mark the build as aborted
+                    // }
+
+                    if (changes.resource_changes && changes.resource_changes.size() > 0) {
                         echo "Changes detected. Proceeding with deployment..."
                         currentBuild.result = 'SUCCESS' // Mark the build as successful
                     } else {
-                        echo "No changes detected. Skipping deployment."
-                        currentBuild.result = 'ABORTED' // Mark the build as aborted
+                    echo "No changes detected. Skipping deployment."
+                    currentBuild.result = 'ABORTED' // Mark the build as aborted
                     }
                 }
             }
         }
+
+        stage('Check or Initialize Pulumi Stack') {
+            steps {
+                script {
+                    // Check if the stack exists
+                    def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
+                    def stackExists = stackList.contains(PULUMI_STACK)
+                    if (!stackExists) {
+                            sh "pulumi stack init ${PULUMI_STACK}"
+                        }
+                    else { 
+                            sh "pulumi stack select ${PULUMI_STACK}"
+                        }                   
+                      
+                }
+            }
+        }
+
+        
 
         stage('Pulumi Up') {
             when {
