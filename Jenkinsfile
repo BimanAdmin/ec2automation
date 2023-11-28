@@ -66,11 +66,8 @@ pipeline {
                     
                     echo "Pulumi Preview Output: ${previewOutput}"
 
-                    //def changes = readJSON file: 'pulumi-preview-output.json'
-                    def changes = script {
-                        def jsonData = readFile(file: 'pulumi-preview-output.json')
-                        return readJSON text: jsonData
-                    }
+                    def changes = readJSON file: 'pulumi-preview-output.json'
+                    
                     //def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
 
 
