@@ -65,7 +65,7 @@ pipeline {
                     def previewOutput = readFile('pulumi-preview-output.json').trim()
                     echo "Pulumi Preview Output: ${previewOutput}"
 
-                    def changes = readJSON file: 'pulumi-preview-output.json'
+                    def changes = readJSON text: 'pulumi-preview-output.json'
 
 
                     //def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
