@@ -67,7 +67,7 @@ pipeline {
                     // Create a script file for Pulumi up command
                         writeFile file: 'pulumi-up.sh', text: '''
                             #!/bin/bash
-                            pulumi destroy --yes
+                            pulumi up --yes
                         '''
                         
                         // Make the script executable
@@ -97,11 +97,12 @@ pipeline {
                             sh 'export PULUMI_CONFIG_PASSPHRASE="$PULUMI_CONFIG_PASSPHRASE"' 
                             sh './pulumi-up.sh'
                     }
-                }
+                }else {
+                        echo 'No changes detected. Skipping Pulumi up.'
+                    }
             }
         }
-
-
+        
     }
 
 
