@@ -59,21 +59,21 @@ pipeline {
                     //echo "Pulumi Preview Output: ${previewOutput}"
                     //def changes = readJSON text: previewOutput
 
-                    // if (changes.steps && changes.steps.size() > 0) {
-                    //     echo "Changes detected. Proceeding with deployment..."
-                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
-                    // } else {
-                    //     echo "No changes detected. Skipping deployment."
-                    //     currentBuild.result = 'ABORTED' // Mark the build as aborted
-                    // }
-
-                    if (changes.resource_changes && changes.resource_changes.size() > 0) {
+                    if (changes.steps && changes.steps.size() > 0) {
                         echo "Changes detected. Proceeding with deployment..."
                         currentBuild.result = 'SUCCESS' // Mark the build as successful
                     } else {
-                    echo "No changes detected. Skipping deployment."
-                    currentBuild.result = 'ABORTED' // Mark the build as aborted
+                        echo "No changes detected. Skipping deployment."
+                        currentBuild.result = 'ABORTED' // Mark the build as aborted
                     }
+
+                    // if (changes.resource_changes && changes.resource_changes.size() > 0) {
+                    //     echo "Changes detected. Proceeding with deployment..."
+                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
+                    // } else {
+                    // echo "No changes detected. Skipping deployment."
+                    // currentBuild.result = 'ABORTED' // Mark the build as aborted
+                    // }
                 }
             }
         }
