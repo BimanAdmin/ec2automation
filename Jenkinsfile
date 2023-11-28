@@ -60,7 +60,7 @@ pipeline {
             steps {
                 script {
 
-                    def pulumiPreviewOutput = sh(script: 'pulumi refresh --json', returnStdout: true).trim()
+                    def pulumiPreviewOutput = sh(script: 'pulumi refresh --json --yes', returnStdout: true).trim()
                     echo "Pulumi refresh Output: ${pulumiPreviewOutput}"
 
 
