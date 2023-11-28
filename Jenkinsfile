@@ -61,7 +61,8 @@ pipeline {
                 script {
                     def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
                     echo "Pulumi Preview Output: ${previewOutput}"
-                    def changes = readJSON text: previewOutput
+                    //def changes = readJSON text: previewOutput
+                    def changes = previewOutput.contains(PULUMI_STACK)
 
                     if (changes.steps && changes.steps.size() > 0) {
                         echo "Changes detected. Proceeding with deployment..."
