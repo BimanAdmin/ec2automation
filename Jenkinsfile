@@ -132,6 +132,9 @@ pipeline {
                         echo "No changes detected. Skipping deployment."
                         currentBuild.result = 'ABORTED' // Mark the build as aborted
                     }
+
+            }
+            
             }
         }
 
