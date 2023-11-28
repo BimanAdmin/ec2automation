@@ -68,6 +68,7 @@ pipeline {
                     def changes = readJSON file: 'pulumi-preview-output.json'
                     if (changes.preview.steps && changes.preview.steps.size() > 0) {
                         echo "Changes detected. Proceeding with deployment..."
+                        currentBuild.result = 'SUCCESS'
                     } else {
                         echo "No changes detected. Skipping deployment."
                         currentBuild.result = 'ABORTED'
