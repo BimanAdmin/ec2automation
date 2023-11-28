@@ -62,23 +62,29 @@ pipeline {
                     // Run pulumi preview and save the output to a file
                     sh 'pulumi preview --json > pulumi-preview-output.json'
 
-                    def previewOutput = readFile('pulumi-preview-output.json').trim()
-                    echo "Pulumi Preview Output: ${previewOutput}"
+                    //def previewOutput = readFile('pulumi-preview-output.json').trim()
+                    //echo "Pulumi Preview Output: ${previewOutput}"
 
-                    def changes = readJSON file: '${previewOutput}'
-
+                    def changes = readJSON file: 'pulumi-preview-output.json'
+                    if (changes.preview.steps && changes.preview.steps.size() > 0) {
+                        echo "Changes detected. Proceeding with deployment..."
+                    } else {
+                        echo "No changes detected. Skipping deployment."
+                        currentBuild.result = 'ABORTED'
+                        return
+                    }
 
                     //def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
                     //echo "Pulumi Preview Output: ${previewOutput}"
                     //def changes = readJSON text: previewOutput
 
-                    if (changes.steps && changes.steps.size() > 0) {
-                        echo "Changes detected. Proceeding with deployment..."
-                        currentBuild.result = 'SUCCESS' // Mark the build as successful
-                    } else {
-                        echo "No changes detected. Skipping deployment."
-                        currentBuild.result = 'ABORTED' // Mark the build as aborted
-                    }
+                    // if (changes.steps && changes.steps.size() > 0) {
+                    //     echo "Changes detected. Proceeding with deployment..."
+                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
+                    // } else {
+                    //     echo "No changes detected. Skipping deployment."
+                    //     currentBuild.result = 'ABORTED' // Mark the build as aborted
+                    // }
                 }
             }
         }
