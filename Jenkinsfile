@@ -39,44 +39,7 @@ pipeline {
              }
         }
 
-        stage('Pulumi Preview') {
-            steps {
-                script {
-                    // Run pulumi preview and save the output to a file
-                    sh 'pulumi preview --json > pulumi-preview-output.json'
-
-                    def previewOutput = readFile('pulumi-preview-output.json').trim()
-                    
-                    echo "Pulumi Preview Output: ${previewOutput}"
-
-                    def changes = readJSON file: 'pulumi-preview-output.json'
-                    
-                    //def resourcesChanged = changes.summary.resource_changes.any { it.change == "create" || it.change == "update" || it.change == "replace" }
-
-
-
-                    //def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
-                    //echo "Pulumi Preview Output: ${previewOutput}"
-                    //def changes = readJSON text: previewOutput
-
-                    if (changes.steps && changes.steps.size() > 0) {
-                        echo "Changes detected. Proceeding with deployment..."
-                        currentBuild.result = 'SUCCESS' // Mark the build as successful
-                    } else {
-                        echo "No changes detected. Skipping deployment."
-                        currentBuild.result = 'ABORTED' // Mark the build as aborted
-                    }
-
-                    // if (changes.resource_changes && changes.resource_changes.size() > 0) {
-                    //     echo "Changes detected. Proceeding with deployment..."
-                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
-                    // } else {
-                    // echo "No changes detected. Skipping deployment."
-                    // currentBuild.result = 'ABORTED' // Mark the build as aborted
-                    // }
-                }
-            }
-        }
+        
 
         stage('Check or Initialize Pulumi Stack') {
             steps {
@@ -91,6 +54,63 @@ pipeline {
                             sh "pulumi stack select ${PULUMI_STACK}"
                         }                   
                       
+                }
+            }
+        }
+
+        stage('Pulumi Preview') {
+            steps {
+                script {
+                    // Run pulumi preview and save the output to a file
+                    // sh 'pulumi preview --json > pulumi-preview-output.json'
+
+                    // def previewOutput = readFile('pulumi-preview-output.json').trim()
+                    
+                    // echo "Pulumi Preview Output: ${previewOutput}"
+
+                    // def changes = readJSON file: 'pulumi-preview-output.json'
+                    
+
+                    // if (changes.steps && changes.steps.size() > 0) {
+                    //     echo "Changes detected. Proceeding with deployment..."
+                    //     currentBuild.result = 'SUCCESS' // Mark the build as successful
+                    // } else {
+                    //     echo "No changes detected. Skipping deployment."
+                    //     currentBuild.result = 'ABORTED' // Mark the build as aborted
+                    // }
+
+                    def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+                    writeFile file: 'pulumi-preview-output.json', text: previewOutput
+
+                    // Store the current stack's state in S3
+                    sh "pulumi stack export > pulumi-current-state.json"
+                    sh "aws s3 cp pulumi-current-state.json s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}/pulumi-current-state.json"
+
+                    // Compare the preview with the current state
+                    def changes = readJSON file: 'pulumi-preview-output.json'
+                    def currentState = readJSON file: 'pulumi-current-state.json'
+
+                    // Filter out changes that already exist in the current state
+
+                    def filteredChanges = changes.steps.findAll { step ->
+                       def urn = step.urn
+                       def resourceExists = currentState.resources.any { it.urn == urn }
+                       !resourceExists
+                    }
+
+                    // Check if there are changes to apply
+                    if (filteredChanges.size() > 0) {
+                        echo "Changes detected. Proceeding with deployment..."
+                        currentBuild.result = 'SUCCESS'
+                    } else {
+                        echo "No changes detected. Skipping deployment."
+                        currentBuild.result = 'ABORTED'
+                    }
+
+                    // Write the filtered changes to a file for later use
+                     writeFile file: 'pulumi-filtered-changes.json', text: filteredChanges as String
+
+
                 }
             }
         }
