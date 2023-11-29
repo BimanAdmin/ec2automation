@@ -84,6 +84,13 @@ pipeline {
             }
         }
 
+        // Function to read JSON file using JsonSlurperClassic
+        def readJsonFile(String filePath) {
+        def fileContent = readFile file: filePath
+        def jsonSlurper = new groovy.json.JsonSlurperClassic()
+        return jsonSlurper.parseText(fileContent)
+        }
+
 
         stage('Pulumi Up') {
             when {
