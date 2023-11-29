@@ -1,4 +1,4 @@
-library 'pipeline-utility-steps@*'
+@Library('pipeline-utility-steps@*') _
 
 
 pipeline {
