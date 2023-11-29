@@ -48,7 +48,6 @@ pipeline {
 
                     // Store the current stack's state in S3
                     sh "pulumi stack export > pulumi-current-state.json"
-                    //sh "aws s3 cp pulumi-current-state.json s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}/pulumi-current-state.json"
                     sh "aws s3 cp pulumi-current-state.json s3://${PULUMI_STATE_BUCKET}/pulumi-current-state.json"
 
                     // Compare the preview with the current state
