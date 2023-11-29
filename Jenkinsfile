@@ -8,7 +8,7 @@ pipeline {
         AWS_CREDENTIALS_ID = credentials('AWS_CREDENTIALS_ID')
         PULUMI_STACK = 'ec2automation-s3'
         GITHUB_REPO_URL = 'https://github.com/BimanAdmin/ec2automation.git'
-        PULUMI_STATE_BUCKET = 'pulumi-state-new-8437'  // Set your Pulumi state bucket URL AWS_CREDENTIALS_ID
+        //PULUMI_STATE_BUCKET = 'pulumi-state-new-8437'  // Set your Pulumi state bucket URL AWS_CREDENTIALS_ID
         PATH = "/var/lib/jenkins/.pulumi/bin:$PATH" // Installation Path for Pulumi on Jenkins ec2 machine
         npm_PATH= " /usr/share/npm:$npm_PATH"
         PULUMI_CONFIG_PASSPHRASE = credentials('PULUMI_CONFIG_PASSPHRASE')
@@ -76,7 +76,8 @@ pipeline {
                         sh 'export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY'
 
                         // Set Pulumi state storage to AWS S3
-                        sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}/"
+                        //sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}/"
+                        sh 'pulumi login s3://sandbox-pulumi-state-new?region=us-east-1'
                         
                         sh 'curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -'
                         sh 'sudo apt-get install -y nodejs'
