@@ -1,7 +1,3 @@
-//@Library('pipeline-utility-steps@*') _
-//@Library('pipeline-utility-steps') _
-@Library('pipeline-utility-steps@2.16.0') _
-
 
 pipeline {
     agent any
@@ -56,8 +52,12 @@ pipeline {
                     sh "aws s3 cp pulumi-current-state.json s3://${PULUMI_STATE_BUCKET}/pulumi-current-state.json"
 
                     // Compare the preview with the current state
-                    def changes = readJSON file: 'pulumi-preview-output.json'
-                    def currentState = readJSON file: 'pulumi-current-state.json'
+                    //def changes = readJSON file: 'pulumi-preview-output.json'
+                    //def currentState = readJSON file: 'pulumi-current-state.json'
+
+                    def changes = readJSON file('pulumi-preview-output.json')
+                    def currentState = readJSON file('pulumi-current-state.json')
+
 
                     // Filter out changes that already exist in the current state
 
