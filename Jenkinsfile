@@ -76,7 +76,7 @@ pipeline {
                         sh 'export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY'
 
                         // Set Pulumi state storage to AWS S3
-                        sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}"
+                        sh "pulumi login s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}/${AWS_REGION}"
                         
                         sh 'curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -'
                         sh 'sudo apt-get install -y nodejs'
