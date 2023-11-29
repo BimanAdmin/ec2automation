@@ -12,7 +12,7 @@ const server = new aws.ec2.Instance("ansibleserver", {
     instanceType: "t2.small",
     securityGroups: [ group.name ], // reference the security group resource above
     ami: "ami-0230bd60aa48260c6",
-    keyName:"ec2-automation-key",
+    keyName:"ec2-automation-key-new",
     userData: `#!/bin/bash
               sudo yum update -y
               sudo yum install -y docker
