@@ -1,4 +1,11 @@
 
+// Function to read JSON file using JsonSlurperClassic
+def readJsonFile(String filePath) {
+    def fileContent = readFile file: filePath
+    def jsonSlurper = new groovy.json.JsonSlurperClassic()
+    return jsonSlurper.parseText(fileContent)
+}
+
 pipeline {
     agent any
 
@@ -43,7 +50,7 @@ pipeline {
         stage('Pulumi Preview') {
             steps {
                 script {
-                    
+                                
                     def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
                     writeFile file: 'pulumi-preview-output.json', text: previewOutput
 
@@ -82,13 +89,6 @@ pipeline {
 
                 }
             }
-        }
-
-        // Function to read JSON file using JsonSlurperClassic
-        def readJsonFile(String filePath) {
-        def fileContent = readFile file: filePath
-        def jsonSlurper = new groovy.json.JsonSlurperClassic()
-        return jsonSlurper.parseText(fileContent)
         }
 
 
