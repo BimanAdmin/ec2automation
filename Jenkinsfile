@@ -27,7 +27,7 @@ pipeline {
         stage('Fetch Code') {
             steps {
                 echo 'Fetching code from GitHub'
-                git branch: 'master', url: "${GITHUB_REPO_URL}"
+                git branch: 'main', url: "${GITHUB_REPO_URL}"
             }
         }
 
