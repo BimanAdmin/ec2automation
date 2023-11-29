@@ -39,8 +39,52 @@ pipeline {
              }
         }
 
+        stage('Pulumi Preview') {
+            steps {
+                script {
+                    
+                    def previewOutput = sh(script: 'pulumi preview --json', returnStdout: true).trim()
+                    writeFile file: 'pulumi-preview-output.json', text: previewOutput
+
+                    // Store the current stack's state in S3
+                    sh "pulumi stack export > pulumi-current-state.json"
+                    //sh "aws s3 cp pulumi-current-state.json s3://${PULUMI_STATE_BUCKET}/${PULUMI_STACK}/pulumi-current-state.json"
+                    sh "aws s3 cp pulumi-current-state.json s3://${PULUMI_STATE_BUCKET}/pulumi-current-state.json"
+
+                    // Compare the preview with the current state
+                    def changes = readJSON file: 'pulumi-preview-output.json'
+                    def currentState = readJSON file: 'pulumi-current-state.json'
+
+                    // Filter out changes that already exist in the current state
+
+                    def filteredChanges = changes.steps.findAll { step ->
+                       def urn = step.urn
+                       def resourceExists = currentState.resources.any { it.urn == urn }
+                       !resourceExists
+                    }
+
+                    // Check if there are changes to apply
+                    if (filteredChanges.size() > 0) {
+                        echo "Changes detected. Proceeding with deployment..."
+                        currentBuild.result = 'SUCCESS'
+                    } else {
+                        echo "No changes detected. Skipping deployment."
+                        currentBuild.result = 'ABORTED'
+                    }
+
+                    // Write the filtered changes to a file for later use
+                     writeFile file: 'pulumi-filtered-changes.json', text: filteredChanges as String
+
+
+                }
+            }
+        }
+
 
         stage('Pulumi Up') {
+            when {
+                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+            }
             steps {
                 script {
 
