@@ -62,8 +62,8 @@ pipeline {
                     //def changes = readJSON file: 'pulumi-preview-output.json'
                     //def currentState = readJSON file: 'pulumi-current-state.json'
 
-                    def changes = readJSON file('pulumi-preview-output.json')
-                    def currentState = readJSON file('pulumi-current-state.json')
+                    def changes = readJsonFile('pulumi-preview-output.json')
+                    def currentState = readJsonFile('pulumi-current-state.json')
 
 
                     // Filter out changes that already exist in the current state
