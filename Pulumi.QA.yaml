@@ -1,2 +1,2 @@
 config:
-  automation:awsRegion: us-west-2
+  automation:awsRegion: us-east-1
