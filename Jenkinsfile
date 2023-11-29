@@ -12,7 +12,7 @@ pipeline {
         PATH = "/var/lib/jenkins/.pulumi/bin:$PATH" // Installation Path for Pulumi on Jenkins ec2 machine
         npm_PATH= " /usr/share/npm:$npm_PATH"
         PULUMI_CONFIG_PASSPHRASE = credentials('PULUMI_CONFIG_PASSPHRASE')
-        PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN')
+        //PULUMI_ACCESS_TOKEN = credentials('PULUMI_ACCESS_TOKEN')
         NODE_VERSION = '14'
 
     }
@@ -37,6 +37,23 @@ pipeline {
                 sh "export PATH=$PATH:/var/lib/jenkins/.pulumi/bin"
 
              }
+        }
+
+        stage('Check or Initialize Pulumi Stack') {
+            steps {
+                script {
+                    // Check if the stack exists
+                    def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
+                    def stackExists = stackList.contains(PULUMI_STACK)
+                    if (!stackExists) {
+                            sh "pulumi stack init ${PULUMI_STACK}"
+                        }
+                    else { 
+                            sh "pulumi stack select ${PULUMI_STACK}"
+                        }                   
+                      
+                }
+            }
         }
 
 
@@ -93,24 +110,6 @@ pipeline {
                      writeFile file: 'pulumi-filtered-changes.json', text: filteredChanges as String
 
 
-                }
-            }
-        }
-
-
-        stage('Check or Initialize Pulumi Stack') {
-            steps {
-                script {
-                    // Check if the stack exists
-                    def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
-                    def stackExists = stackList.contains(PULUMI_STACK)
-                    if (!stackExists) {
-                            sh "pulumi stack init ${PULUMI_STACK}"
-                        }
-                    else { 
-                            sh "pulumi stack select ${PULUMI_STACK}"
-                        }                   
-                      
                 }
             }
         }
