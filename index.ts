@@ -30,15 +30,15 @@ const server = new aws.ec2.Instance("ansibleserver", {
     
 });
 
-// const ebsVolume = new aws.ebs.Volume("myEBSVolume", {
-//     size: 5,
-//     availabilityZone: "us-east-1b", // Change this to the desired availability zone
-//     tags: {
-//         Name: "My-new-EBSVolume",
-//     },
-// });
+const ebsVolume = new aws.ebs.Volume("myEBSVolume", {
+    size: 5,
+    availabilityZone: "us-east-1b", // Change this to the desired availability zone
+    tags: {
+        Name: "My-new-EBSVolume",
+    },
+});
 
 export const publicIp = server.publicIp;
 export const publicHostName = server.publicDns;
 export const instanceId = server.id;
-//export const ebsVolumeId = ebsVolume.id;
+export const ebsVolumeId = ebsVolume.id;
