@@ -6,7 +6,7 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_CREDENTIALS_ID = credentials('AWS_CREDENTIALS_ID')
-        PULUMI_STACK = 'ec2automation-s3'
+        PULUMI_STACK = 'automation-s3-new'
         GITHUB_REPO_URL = 'https://github.com/BimanAdmin/ec2automation.git'
         PULUMI_STATE_BUCKET = 'pulumi-jenkins-state/state-bucket/'  // Set your Pulumi state bucket URL AWS_CREDENTIALS_ID
         PATH = "/var/lib/jenkins/.pulumi/bin:$PATH" // Installation Path for Pulumi on Jenkins ec2 machine
@@ -43,24 +43,6 @@ pipeline {
              }
         }
 
-        
-
-        stage('Check or Initialize Pulumi Stack') {
-            steps {
-                script {
-                    // Check if the stack exists
-                    def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
-                    def stackExists = stackList.contains(PULUMI_STACK)
-                    if (!stackExists) {
-                            sh "pulumi stack init ${PULUMI_STACK}"
-                        }
-                    else { 
-                            sh "pulumi stack select ${PULUMI_STACK}"
-                        }                   
-                      
-                }
-            }
-        }
 
         stage('Pulumi Preview') {
             steps {
@@ -115,6 +97,24 @@ pipeline {
                      writeFile file: 'pulumi-filtered-changes.json', text: filteredChanges as String
 
 
+                }
+            }
+        }
+
+
+        stage('Check or Initialize Pulumi Stack') {
+            steps {
+                script {
+                    // Check if the stack exists
+                    def stackList = sh(script: 'pulumi stack ls --json', returnStdout: true).trim()
+                    def stackExists = stackList.contains(PULUMI_STACK)
+                    if (!stackExists) {
+                            sh "pulumi stack init ${PULUMI_STACK}"
+                        }
+                    else { 
+                            sh "pulumi stack select ${PULUMI_STACK}"
+                        }                   
+                      
                 }
             }
         }
