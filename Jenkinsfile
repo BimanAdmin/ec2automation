@@ -76,7 +76,7 @@ pipeline {
 
                     // Check if there are changes to apply
                     if (filteredChanges.size() > 0) {
-                        echo "Changes detected. Proceeding with deployment..."
+                        echo "New Changes detected. Proceeding with deployment..."
                         currentBuild.result = 'SUCCESS'
                     } else {
                         echo "No changes detected. Skipping deployment."
