@@ -36,6 +36,10 @@ pipeline {
             steps {
                 echo 'Fetching code from GitHub'
                 git branch: 'main-new', url: "${GITHUB_REPO_URL}"
+
+                // sh 'curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"'
+                // sh 'unzip awscliv2.zip'
+                // sh 'sudo ./aws/install'
             }
         }
 
